@@ -51,15 +51,60 @@ export const getMyValidation = async (req, res) => {
       );
       return res.status(200).json({
         success: true,
-        message: "Codigo de barras enviado correctamente"
-      })
+        message: "Codigo de barras enviado correctamente",
+      });
+    } else if (event.eventId.tipoValidacion == "boton") {
+      return res.status(200).json({
+        success: true,
+        message: "Boton Creado Exitosamente",
+        validation: event.validationToken,
+      });
     }
-    else if(event.eventId.tipoValidacion == "boton"){
-        return res.status(200).json({
-            success: true,
-            message: "Boton Creado Exitosamente",
-            validation: event.validationToken
-        })
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+export const validateTokenEvent = async (req, res) => {
+  try {
+    const { validationToken } = req.body;
+    const event = await EventUser.findOne({
+      eventId: req.params.id,
+      validationToken: validationToken,
+    });
+
+    if (!event) {
+      return res.status(400).json({
+        success: false,
+        message: "No esta permitido su ingreso al evento",
+      });
+    }
+
+    console.log(event);
+
+    if (event.estado == "cancel") {
+      return res.status(400).json({
+        success: false,
+        message: "No esta permitido su ingreso al evento fue cancelado",
+      });
+    }
+
+    if (event.estado == "out") {
+      event.estado = "in";
+      await event.save();
+      return res.status(200).json({
+        success: true,
+        message: "Ingresando al evento",
+      });
+    }
+
+    if (event.estado == "in") {
+      event.estado = "out";
+      await event.save();
+      return res.status(200).json({
+        success: true,
+        message: "Saliendo del evento",
+      });
     }
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message });
