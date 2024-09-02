@@ -6,6 +6,8 @@ import authRoutes from "./routes/authRoutes.js";
 import authUserRoutes from "./routes/authUserRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import eventUserRoutes from "./routes/eventUserRoutes.js";
+import validationRoutes from "./routes/validationRoutes.js";
+
 
 dotenv.config();
 const app = express();
@@ -14,9 +16,10 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/auth", authRoutes);
-app.use("/api/auth-user", authUserRoutes)
+app.use("/api/auth-user", authUserRoutes);
 app.use("/api/event", eventRoutes);
 app.use("/api/event-user", eventUserRoutes);
+app.use("/api/validation", validationRoutes);
 
 app.listen(PORT, () => {
   connectDB();

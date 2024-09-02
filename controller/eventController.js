@@ -37,23 +37,27 @@ export const getEventsFromCompanie = async (req, res) => {
   }
 };
 
-export const getEvent = async(req, res) => {
-    try {
-        const event = await Event.findOne({ _id: req.params.id });
-    
-        if (!event) {
-          return res.status(400).json({
-            success: false,
-            message: "Evento no encontrado",
-          });
-        }
-    
-        res.status(201).json({
-          success: true,
-          message: "Evento Encontrado",
-          event,
-        });
-      } catch (error) {
-        return res.status(400).json({ success: false, message: error.message });
-      }
-}
+export const getEvent = async (req, res) => {
+  try {
+    const event = await Event.findOne({ _id: req.params.id });
+
+    if (!event) {
+      return res.status(400).json({
+        success: false,
+        message: "Evento no encontrado",
+      });
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "Evento Encontrado",
+      event,
+    });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+
+
+
