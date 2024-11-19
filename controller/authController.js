@@ -38,7 +38,7 @@ export const signup = async (req, res) => {
     await companie.save();
 
     //jwt
-    generateTokenAndSetCookie(res, companie._id);
+    const token = generateTokenAndSetCookie(res, companie._id);
 
     await sendVerificationEmail(companie.email, verificationToken);
     res.status(201).json({
@@ -48,6 +48,7 @@ export const signup = async (req, res) => {
         ...companie._doc,
         password: undefined,
       },
+      token
     });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -110,7 +111,7 @@ export const login = async (req, res) => {
         .json({ success: false, message: "Credenciales Invalidas" });
     }
 
-    generateTokenAndSetCookie(res, companie._id);
+    const token = generateTokenAndSetCookie(res, companie._id);
 
     companie.lastLogin = new Date();
     await companie.save();
@@ -122,6 +123,7 @@ export const login = async (req, res) => {
         ...companie._doc,
         password: undefined,
       },
+      token
     });
   } catch (error) {
     console.log(error);
