@@ -3,6 +3,7 @@ import { EventUser } from "../models/EventUser.js";
 import { User } from "../models/User.js";
 import { generateValidationToken } from "../utils/generateValidationToken.js";
 import { Companie } from "../models/Companie.js";
+import { sendRegistrationEmails } from "../mailtrap/emails.js";
 
 export const addUserEvent = async (req, res) => {
   try {
@@ -87,7 +88,16 @@ export const getUsersFromEvent = async (req, res) => {
 };
 
 export const sendEmailsForRegister = async (req, res) => {
+  const { users } = req.body;
 
+  try {
+    if (users) {
+      sendRegistrationEmails(users);
+      return res.status(200).json({ success: true, message: "Emails enviados correctamente" });
+    }
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
 };
 
 export const getEventsUser = async (req, res) => {
@@ -102,7 +112,9 @@ export const getEventsUser = async (req, res) => {
     }
 
     // Encontrar los eventos y poblar la información de "eventId"
-    const events = await EventUser.find({ email: user.email }).populate("eventId");
+    const events = await EventUser.find({ email: user.email }).populate(
+      "eventId"
+    );
 
     if (!events || events.length === 0) {
       return res.status(400).json({
@@ -124,4 +136,3 @@ export const getEventsUser = async (req, res) => {
     });
   }
 };
-

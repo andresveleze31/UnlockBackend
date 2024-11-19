@@ -4,6 +4,7 @@ import {
   VERIFICATION_EMAIL_TEMPLATE,
 } from "./emailTemplates.js";
 import { mailtrapClient, sender } from "./mailtrap.js";
+import nodemailer from "nodemailer"
 
 export const sendVerificationEmail = async (email, verificationToken) => {
   const recipient = [{ email }];
@@ -76,5 +77,47 @@ export const sendResetSuccessEmail = async (email) => {
   } catch (error) {
     console.error(`Error sending password reset success email`, error);
     throw new Error(`Error sending password reset success email: ${error}`);
+  }
+};
+
+export const sendRegistrationEmails = async (users) => {
+  // Configura el transportador de nodemailer
+  const transporter = nodemailer.createTransport({
+    service: "gmail", // Cambia esto si usas otro servicio
+    auth: {
+      user: "unlocka74@gmail.com", // Tu dirección de correo
+      pass: "wvio dpsf cpge cvil", // Tu contraseña de Gmail o contraseña de aplicación
+    },
+  });
+
+  // URL de registro
+  const registrationUrl = "https://example.com/register";
+
+  // Recorre los usuarios y envía el correo a cada uno
+  for (const user of users) {
+    const emailOptions = {
+      from: '"Tu Nombre o Empresa" <tu_correo@gmail.com>', // Remitente
+      to: user.email, // Destinatario
+      subject: "Regístrate en nuestra plataforma",
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+          <h2>¡Regístrate aquí!</h2>
+          <p>Hola,</p>
+          <p>Te invitamos a unirte a nuestra plataforma. Haz clic en el botón de abajo para completar tu registro:</p>
+          <a href="${registrationUrl}" 
+             style="display: inline-block; padding: 10px 15px; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px;">
+            Completar Registro
+          </a>
+          <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+        </div>
+      `,
+    };
+
+    try {
+      const info = await transporter.sendMail(emailOptions);
+      console.log(`Email enviado a ${user.email}: ${info.response}`);
+    } catch (error) {
+      console.error(`Error enviando email a ${user.email}:`, error);
+    }
   }
 };

@@ -14,7 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
-  origin: "http://localhost:5173", // Cambia a tu URL del frontend
+  origin:["http://localhost:5173", "https://unlock-front.onrender.com"], // Cambia a tu URL del frontend
   credentials: true, // Permite el envío de cookies
 };
 
