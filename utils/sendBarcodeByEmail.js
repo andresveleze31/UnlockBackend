@@ -16,15 +16,24 @@ const generateBarcodeBuffer = async (data) => {
       throw error;
     }
   };
-
-export const sendBarcodeByEmail = async(data, recipientEmail, subject, message, senderEmail, senderPassword) => {
+  export const sendBarcodeByEmail = async (
+    data,
+    recipientEmail,
+    subject,
+    message,
+    senderEmail,
+    senderPassword
+  ) => {
     try {
       // Genera el buffer del código de barras
       const barcodeBuffer = await generateBarcodeBuffer(data);
   
+      // Convierte el buffer a base64
+      const barcodeBase64 = `data:image/png;base64,${barcodeBuffer.toString("base64")}`;
+  
       // Configurar el transporte de nodemailer
       const transporter = nodemailer.createTransport({
-        service: "gmail", // Puedes usar cualquier otro servicio o configurar tu propio SMTP
+        service: "gmail", // Servicio de correo
         auth: {
           user: senderEmail,
           pass: senderPassword,
@@ -39,9 +48,9 @@ export const sendBarcodeByEmail = async(data, recipientEmail, subject, message, 
         text: message,
         attachments: [
           {
-            filename: 'barcode.png',
+            filename: "barcode.png",
             content: barcodeBuffer,
-            encoding: 'base64'
+            encoding: "base64",
           },
         ],
       };
@@ -49,7 +58,11 @@ export const sendBarcodeByEmail = async(data, recipientEmail, subject, message, 
       // Enviar el email
       const info = await transporter.sendMail(mailOptions);
       console.log("Email enviado:", info.response);
+  
+      // Retorna el código de barras en base64
+      return barcodeBase64;
     } catch (error) {
-      console.error("Error al enviar el email:", error);
+      console.error("Error al enviar el email o generar el código:", error);
+      throw error;
     }
   };

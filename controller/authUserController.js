@@ -37,7 +37,7 @@ export const signup = async (req, res) => {
     await user.save();
 
     //jwt
-    generateTokenAndSetCookieUser(res, user._id);
+    const token = generateTokenAndSetCookieUser(res, user._id);
 
     await sendVerificationEmail(user.email, verificationToken);
     res.status(201).json({
@@ -47,6 +47,7 @@ export const signup = async (req, res) => {
         ...user._doc,
         password: undefined,
       },
+      token
     });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -108,7 +109,7 @@ export const login = async (req, res) => {
         .json({ success: false, message: "Credenciales Invalidas" });
     }
 
-    generateTokenAndSetCookieUser(res, user._id);
+    const token = generateTokenAndSetCookieUser(res, user._id);
 
     user.lastLogin = new Date();
     await user.save();
@@ -120,6 +121,7 @@ export const login = async (req, res) => {
         ...user._doc,
         password: undefined,
       },
+      token
     });
   } catch (error) {
     console.log(error);

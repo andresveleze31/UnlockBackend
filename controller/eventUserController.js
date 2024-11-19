@@ -97,24 +97,31 @@ export const getEventsUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Usuario no valido",
+        message: "Usuario no válido",
       });
     }
-    const events = await EventUser.find({ email: user.email });
 
-    if (!events || events.length == 0) {
+    // Encontrar los eventos y poblar la información de "eventId"
+    const events = await EventUser.find({ email: user.email }).populate("eventId");
+
+    if (!events || events.length === 0) {
       return res.status(400).json({
         success: false,
         message: "Eventos no encontrados",
       });
     }
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: "Eventos Encontrados",
+      message: "Eventos encontrados",
       events,
     });
   } catch (error) {
-    return res.status(400).json({ success: false, message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Error en el servidor",
+      error: error.message,
+    });
   }
 };
+

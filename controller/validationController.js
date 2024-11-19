@@ -41,7 +41,7 @@ export const getMyValidation = async (req, res) => {
         qr,
       });
     } else if (event.eventId.tipoValidacion == "barcode") {
-      await sendBarcodeByEmail(
+      const barcode = await sendBarcodeByEmail(
         event.validationToken,
         user.email,
         "Envio de Validacion Barcode - Evento",
@@ -52,6 +52,7 @@ export const getMyValidation = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "Codigo de barras enviado correctamente",
+        barcode
       });
     } else if (event.eventId.tipoValidacion == "boton") {
       return res.status(200).json({
