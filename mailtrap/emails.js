@@ -91,7 +91,7 @@ export const sendRegistrationEmails = async (users) => {
   });
 
   // URL de registro
-  const registrationUrl = "https://example.com/register";
+  const registrationUrl = "https://unlock-front.onrender.com/register";
 
   // Recorre los usuarios y envía el correo a cada uno
   for (const user of users) {
