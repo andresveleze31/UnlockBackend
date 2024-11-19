@@ -91,12 +91,12 @@ export const sendRegistrationEmails = async (users) => {
   });
 
   // URL de registro
-  const registrationUrl = "https://unlock-front.onrender.com/register";
+  const registrationUrl = "https://unlock-front.onrender.com/";
 
   // Recorre los usuarios y envía el correo a cada uno
   for (const user of users) {
     const emailOptions = {
-      from: '"Tu Nombre o Empresa" <tu_correo@gmail.com>', // Remitente
+      from: 'Unlock', // Remitente
       to: user.email, // Destinatario
       subject: "Regístrate en nuestra plataforma",
       html: `
